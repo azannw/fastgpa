@@ -683,6 +683,13 @@ select {
   flex-shrink: 0;
 }
 
+.tool-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
 .tool-label {
   font-size: 0.9375rem;
   font-weight: 600;
@@ -1746,14 +1753,26 @@ select {
   .section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
+  }
+  
+  .section-header h2 {
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .section-header h2 .course-name-input {
+    width: 100%;
+    min-width: unset !important;
+    max-width: 100%;
   }
   
   .semester-actions {
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
   
   .contribute-links {
@@ -1899,13 +1918,15 @@ select {
     padding: 18px;
     flex-direction: row;
     align-items: center;
+    gap: 14px;
   }
   
   .tool-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     margin-bottom: 0;
-    margin-right: 14px;
+    margin-right: 0;
+    flex-shrink: 0;
   }
   
   .tool-icon svg {
@@ -1914,16 +1935,20 @@ select {
   }
   
   .tool-content {
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
   }
   
   .tool-label {
-    font-size: 1rem;
+    font-size: 1.0625rem;
     margin-bottom: 4px;
   }
   
   .tool-desc {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
   }
   
   .course-item {
@@ -2035,10 +2060,21 @@ select {
   
   .target-calc-btn {
     width: 100%;
-    height: 58px;
+    min-height: 56px;
+    height: auto;
+    padding: 16px 24px;
     font-size: 1.0625rem;
     margin-top: 12px;
     font-weight: 600;
+  }
+  
+  /* Prevent semester card overflow */
+  .semester-card {
+    overflow: hidden;
+  }
+  
+  .semester-card .card {
+    max-width: 100%;
   }
   
   .timeline-tile {
@@ -2211,8 +2247,17 @@ select {
 
 /* Extra small screens - 360px */
 @media (max-width: 360px) {
-  .container { padding: 14px; }
-  h1 { font-size: 1.375rem; }
+  .container { 
+    padding: 12px; 
+    overflow-x: hidden;
+  }
+  
+  h1 { font-size: 1.25rem; }
+  
+  .card {
+    padding: 14px;
+    overflow: hidden;
+  }
   
   .dashboard {
     gap: 10px;
@@ -2230,11 +2275,31 @@ select {
   }
   
   .tool-btn {
-    padding: 16px;
+    padding: 14px;
+    gap: 12px;
+  }
+  
+  .tool-icon {
+    width: 42px;
+    height: 42px;
   }
   
   .tool-label {
     font-size: 0.9375rem;
+  }
+  
+  .tool-desc {
+    font-size: 0.8125rem;
+  }
+  
+  .target-calc-btn {
+    min-height: 52px;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+  
+  .section-header h2 .course-name-input {
+    font-size: 1rem !important;
   }
   
   .course-item {
