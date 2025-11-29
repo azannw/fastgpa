@@ -2378,6 +2378,68 @@ select {
   }
 }
 
+/* Grading Scale Table */
+.grading-scale-section {
+  margin-top: 24px;
+}
+
+.grading-table-container {
+  overflow-x: auto;
+}
+
+.grading-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.grading-table th,
+.grading-table td {
+  padding: 12px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.grading-table th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.grading-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.grading-table tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+.grading-table td:first-child {
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+}
+
+.grading-table td:last-child {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+@media (max-width: 480px) {
+  .grading-table th,
+  .grading-table td {
+    padding: 10px 16px;
+    font-size: 0.875rem;
+  }
+  
+  .grading-table td:first-child {
+    font-size: 0.8125rem;
+  }
+}
+
 @media print {
   body { background: white; color: black; }
   

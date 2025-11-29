@@ -653,6 +653,24 @@ function showLoadingAnimation() {
   }, 2500);
 }
 
+function showLoadingAnimationOnPageLoad() {
+  var overlay = document.getElementById('loadingOverlay');
+  overlay.style.display = 'flex';
+  overlay.classList.remove('fade-out');
+  
+  // Show animation for 2 seconds on every page load
+  setTimeout(function() {
+    overlay.classList.add('fade-out');
+    showApp();
+    renderSemesters();
+    recalculateAll();
+    
+    // Wait for fade animation to complete (0.6s)
+    setTimeout(function() {
+      overlay.style.display = 'none';
+    }, 600);
+  }, 2000);
+}
 
 function showApp() {
   document.getElementById('app').classList.remove('hidden');
@@ -1872,11 +1890,9 @@ document.addEventListener('DOMContentLoaded', function() {
   var hasState = loadState();
   
   if (hasState && appState.initialized) {
-    // User returning - show app directly without animation
+    // User returning - always show loading animation then show app
     document.getElementById('programName').textContent = DEPARTMENTS[appState.department]?.name || 'Academic Planner';
-    showApp();
-    renderSemesters();
-    recalculateAll();
+    showLoadingAnimationOnPageLoad();
   } else {
     openSetupModal();
   }
