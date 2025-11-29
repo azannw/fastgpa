@@ -805,7 +805,7 @@ select {
   justify-content: center;
   z-index: 99999;
   opacity: 1;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.6s ease;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -1625,29 +1625,6 @@ select {
   line-height: 1.5;
 }
 
-.view-counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  padding: 8px 16px;
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.view-counter svg {
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.view-counter #viewCount {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--accent);
-}
 
 /* Tablet breakpoint - 900px */
 @media (max-width: 900px) {
@@ -1817,138 +1794,168 @@ select {
   }
 }
 
-/* Small screens - 480px */
+/* Small screens - 480px - EXPANDED for better mobile readability */
 @media (max-width: 480px) {
-  .container { padding: 14px; }
-  h1 { font-size: 1.25rem; }
-  h2 { font-size: 1rem; }
+  .container { padding: 16px; }
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.125rem; }
   
   .main-header {
-    gap: 12px;
-    padding-bottom: 18px;
-    margin-bottom: 20px;
+    gap: 14px;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
   }
   
   .tagline {
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
   }
   
   .header-actions {
-    gap: 8px;
+    gap: 10px;
   }
   
   .icon-btn {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
   }
   
   .icon-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
   }
   
   .dashboard {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 12px;
   }
   
   .stat-card {
-    padding: 12px 10px;
+    padding: 16px 14px;
+    min-height: 120px;
   }
   
   .stat-label {
-    font-size: 0.6875rem;
-    margin-bottom: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 6px;
   }
   
-  .stat-value { font-size: 1.25rem; }
+  .stat-value { font-size: 1.5rem; }
   
   .stat-sub {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
   }
   
   .tools-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
   
   .tool-btn {
-    padding: 12px;
+    padding: 18px;
+    flex-direction: row;
+    align-items: center;
   }
   
   .tool-icon {
-    width: 32px;
-    height: 32px;
-    margin-bottom: 8px;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 0;
+    margin-right: 14px;
   }
   
   .tool-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .tool-content {
+    text-align: left;
   }
   
   .tool-label {
-    font-size: 0.8125rem;
-    margin-bottom: 2px;
+    font-size: 1rem;
+    margin-bottom: 4px;
   }
   
   .tool-desc {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
   
   .course-item {
-    grid-template-columns: auto 1fr;
-    gap: 8px;
-    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .course-item > .course-checkbox {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+  }
+  
+  .course-item {
+    position: relative;
+    padding-left: 44px;
   }
   
   .course-name-input {
-    font-size: 0.875rem;
-    min-width: 80px;
-    padding: 6px 8px;
+    font-size: 1rem;
+    width: 100%;
+    min-width: auto;
+    padding: 12px;
   }
   
   .credit-input {
-    width: 50px;
-    padding: 6px 8px;
-    font-size: 0.8125rem;
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
   }
   
   .grade-select {
-    min-width: 65px;
-    padding: 6px 24px 6px 8px;
-    font-size: 0.8125rem;
+    width: 100%;
+    min-width: auto;
+    padding: 12px 36px 12px 12px;
+    font-size: 1rem;
   }
   
   .course-actions {
-    grid-column: 1 / -1;
-    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
   }
   
   .action-btn {
-    padding: 6px 8px;
-    font-size: 0.6875rem;
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+    flex: 1;
+  }
+  
+  .btn-icon.danger {
+    flex: 0;
+    width: 44px;
+    height: 44px;
   }
   
   .stats-row {
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 14px;
-    padding-top: 14px;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
   }
   
   .stat { 
-    flex: 1 1 calc(33.33% - 8px);
-    min-width: 70px;
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 80px;
   }
   
   .stat .stat-value {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
   
   .target-inputs {
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
   
   .target-inputs .form-group.inline {
@@ -1956,154 +1963,177 @@ select {
     width: 100%;
   }
   
+  .target-inputs .form-group.inline label {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  
   .target-inputs .form-group.inline input,
   .target-inputs .form-group.inline select {
     width: 100%;
+    height: 52px;
+    font-size: 1rem;
+    padding: 14px;
   }
   
   .target-calc-btn {
     width: 100%;
-    height: 46px;
+    height: 56px;
+    font-size: 1rem;
+    margin-top: 8px;
   }
   
   .timeline-tile {
-    min-width: 75px;
-    padding: 10px;
+    min-width: 85px;
+    padding: 14px;
   }
   
   .timeline-label {
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
   
-  .timeline-cgpa { font-size: 0.9375rem; }
+  .timeline-cgpa { font-size: 1.125rem; }
   
   .timeline-credits {
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
   
   .timeline-connector {
-    width: 12px;
+    width: 16px;
   }
   
   .modal-content {
     max-width: 100%;
-    margin: 8px;
-    max-height: 90vh;
+    margin: 12px;
+    max-height: 92vh;
   }
   
   .modal-header {
-    padding: 18px 18px 16px;
+    padding: 20px 20px 18px;
   }
   
   .modal-header h2 {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     padding-right: 30px;
   }
   
   .modal-close {
-    width: 32px;
-    height: 32px;
-    top: 16px;
-    right: 16px;
+    width: 40px;
+    height: 40px;
+    top: 18px;
+    right: 18px;
   }
   
   .modal-body {
-    padding: 18px;
+    padding: 20px;
   }
   
   .modal-actions {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
   }
   
   .modal-actions .btn-secondary,
   .modal-actions .btn-primary {
     width: 100%;
+    height: 52px;
+    font-size: 1rem;
   }
   
   .export-options { grid-template-columns: 1fr; }
   
   .card {
-    padding: 16px;
-    margin-bottom: 14px;
+    padding: 20px;
+    margin-bottom: 18px;
   }
   
   .section-header {
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
   
   .section-header h2 {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
   
   .advice-box {
-    padding: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .advice-header {
-    font-size: 0.9375rem;
-    margin-bottom: 12px;
-  }
-  
-  #adviceList li {
-    font-size: 0.875rem;
-    padding-left: 14px;
-    margin-bottom: 8px;
-  }
-  
-  .help-section {
-    padding: 18px;
+    padding: 20px;
     margin-bottom: 24px;
   }
   
+  .advice-header {
+    font-size: 1.0625rem;
+    margin-bottom: 14px;
+  }
+  
+  #adviceList li {
+    font-size: 1rem;
+    padding-left: 16px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+  
+  .help-section {
+    padding: 22px;
+    margin-bottom: 28px;
+  }
+  
   .help-item strong {
-    font-size: 0.875rem;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: block;
   }
   
   .help-item p {
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
   }
   
   .contribute-section {
-    padding: 18px;
+    padding: 24px;
   }
   
   .contribute-section h3 {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
   
   .contribute-section p {
-    font-size: 0.875rem;
+    font-size: 1rem;
+    line-height: 1.6;
   }
   
-  .footer-social { gap: 20px; }
-  .social-link svg { width: 24px; height: 24px; }
+  .contribute-link {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+  
+  .footer-social { gap: 24px; }
+  .social-link svg { width: 28px; height: 28px; }
   
   .app-footer {
-    padding: 30px 18px;
+    padding: 36px 20px;
   }
   
   .footer-brand {
-    font-size: 0.9375rem;
+    font-size: 1.0625rem;
   }
   
   .footer-note {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
   }
   
   .btn-add-semester {
-    padding: 14px;
-    font-size: 0.875rem;
+    padding: 18px;
+    font-size: 1rem;
   }
   
   .btn-add-course {
-    padding: 10px 14px;
-    font-size: 0.8125rem;
+    padding: 16px 18px;
+    font-size: 1rem;
   }
   
   .chart-container {
-    padding: 14px;
+    padding: 18px;
   }
   
   #gpaChart {
@@ -2123,57 +2153,62 @@ select {
 
 /* Extra small screens - 360px */
 @media (max-width: 360px) {
-  .container { padding: 12px; }
-  h1 { font-size: 1.125rem; }
+  .container { padding: 14px; }
+  h1 { font-size: 1.375rem; }
   
   .dashboard {
-    gap: 6px;
+    gap: 10px;
   }
   
   .stat-card {
-    padding: 10px 8px;
+    padding: 14px 12px;
+    min-height: 110px;
   }
   
-  .stat-value { font-size: 1.125rem; }
+  .stat-value { font-size: 1.375rem; }
   
   .tools-row {
-    gap: 6px;
+    gap: 10px;
   }
   
   .tool-btn {
-    padding: 10px;
+    padding: 16px;
   }
   
   .tool-label {
-    font-size: 0.75rem;
+    font-size: 0.9375rem;
   }
   
   .course-item {
-    padding: 10px;
+    padding: 14px;
+    padding-left: 40px;
   }
   
   .course-name-input {
-    font-size: 0.8125rem;
-    min-width: 70px;
+    font-size: 0.9375rem;
+    min-width: auto;
   }
   
   .credit-input {
-    width: 45px;
+    width: 100%;
+    font-size: 0.9375rem;
   }
   
   .grade-select {
-    min-width: 60px;
+    min-width: auto;
+    width: 100%;
+    font-size: 0.9375rem;
   }
   
   .timeline-tile {
-    min-width: 65px;
-    padding: 8px;
+    min-width: 75px;
+    padding: 12px;
   }
   
-  .timeline-cgpa { font-size: 0.875rem; }
+  .timeline-cgpa { font-size: 1rem; }
   
   .btn-add-semester {
-    padding: 12px;
+    padding: 16px;
     font-size: 0.8125rem;
   }
 }

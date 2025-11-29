@@ -639,38 +639,20 @@ function showLoadingAnimation() {
   overlay.style.display = 'flex';
   overlay.classList.remove('fade-out');
   
-  // Show animation for 4 seconds before fading
+  // Show animation for 2.5 seconds before fading
   setTimeout(function() {
     overlay.classList.add('fade-out');
     showApp();
     recalculateAll();
     saveState();
     
-    // Wait for fade animation to complete (0.8s)
+    // Wait for fade animation to complete (0.6s)
     setTimeout(function() {
       overlay.style.display = 'none';
-    }, 800);
-  }, 4000);
+    }, 600);
+  }, 2500);
 }
 
-function showLoadingAnimationOnRestore() {
-  var overlay = document.getElementById('loadingOverlay');
-  overlay.style.display = 'flex';
-  overlay.classList.remove('fade-out');
-  
-  // Show animation for 3 seconds when restoring state
-  setTimeout(function() {
-    overlay.classList.add('fade-out');
-    showApp();
-    renderSemesters();
-    recalculateAll();
-    
-    // Wait for fade animation to complete (0.8s)
-    setTimeout(function() {
-      overlay.style.display = 'none';
-    }, 800);
-  }, 3000);
-}
 
 function showApp() {
   document.getElementById('app').classList.remove('hidden');
@@ -1893,8 +1875,11 @@ document.addEventListener('DOMContentLoaded', function() {
   var hasState = loadState();
   
   if (hasState && appState.initialized) {
+    // User returning - show app directly without animation
     document.getElementById('programName').textContent = DEPARTMENTS[appState.department]?.name || 'Academic Planner';
-    showLoadingAnimationOnRestore();
+    showApp();
+    renderSemesters();
+    recalculateAll();
   } else {
     openSetupModal();
   }
@@ -1952,62 +1937,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Initialize view counter
-  initViewCounter();
 });
-
-// View Counter - Syncs with Vercel Analytics
-function initViewCounter() {
-  var viewCountEl = document.getElementById('viewCount');
-  if (!viewCountEl) return;
-  
-  // Use localStorage for view tracking
-  // When deployed on Vercel, the actual analytics will be in the Vercel Dashboard
-  var viewKey = 'fastgpa_total_views';
-  var lastVisitKey = 'fastgpa_last_visit';
-  
-  var currentViews = parseInt(localStorage.getItem(viewKey) || '0');
-  var lastVisit = localStorage.getItem(lastVisitKey);
-  var now = new Date().toDateString();
-  
-  // Increment view count (once per session/day)
-  if (lastVisit !== now) {
-    currentViews++;
-    localStorage.setItem(viewKey, currentViews.toString());
-    localStorage.setItem(lastVisitKey, now);
-  }
-  
-  // Display the count with animation
-  animateViewCount(viewCountEl, currentViews);
-}
-
-function animateViewCount(element, target) {
-  var current = 0;
-  var duration = 1000;
-  var step = Math.ceil(target / (duration / 16));
-  
-  function update() {
-    current += step;
-    if (current >= target) {
-      element.textContent = formatViewCount(target);
-    } else {
-      element.textContent = formatViewCount(current);
-      requestAnimationFrame(update);
-    }
-  }
-  
-  if (target > 0) {
-    update();
-  } else {
-    element.textContent = '0';
-  }
-}
-
-function formatViewCount(count) {
-  if (count >= 1000000) {
-    return (count / 1000000).toFixed(1) + 'M';
-  } else if (count >= 1000) {
-    return (count / 1000).toFixed(1) + 'K';
-  }
-  return count.toLocaleString();
-}
