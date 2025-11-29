@@ -1799,9 +1799,6 @@ function createSemesterCard(semester, index) {
       '</h2>' +
       '<div class="semester-actions">' +
         '<button class="semester-import-btn" onclick="openImportTemplateModal(' + index + ')">Import</button>' +
-        '<button class="btn-text" onclick="toggleAllCourses(' + index + ', true)">Enable All</button>' +
-        '<button class="btn-text" onclick="toggleAllCourses(' + index + ', false)">Disable All</button>' +
-        '<button class="btn-text" onclick="openBulkModal(' + index + ')">Paste</button>' +
         '<button class="btn-icon" onclick="moveSemester(' + index + ', -1)" title="Move Up"' + (index === 0 ? ' disabled' : '') + '>Up</button>' +
         '<button class="btn-icon" onclick="moveSemester(' + index + ', 1)" title="Move Down"' + (index === appState.semesters.length - 1 ? ' disabled' : '') + '>Down</button>' +
         '<button class="btn-icon danger" onclick="removeSemester(' + index + ')" title="Delete Semester">' +
