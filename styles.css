@@ -1630,8 +1630,8 @@ select {
 }
 
 .social-link svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .social-link:hover {
@@ -2202,7 +2202,7 @@ select {
   }
   
   .footer-social { gap: 20px; }
-  .social-link svg { width: 24px; height: 24px; }
+  .social-link svg { width: 22px; height: 22px; }
   
   .app-footer {
     padding: 36px 20px;
