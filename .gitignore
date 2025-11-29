@@ -1,0 +1,16 @@
+# Ignore the cloned fastgpa folder
+fastgpa/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if any)
+node_modules/
+

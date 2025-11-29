@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAST NUCES Academic Planner</title>
+  <link rel="preload" href="warning_gif.webp" as="image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <img src="warning_gif.webp" alt="Loading..." class="loading-gif">
+  </div>
+
+  <div id="setupModal" class="modal">
+    <div class="modal-content setup-modal no-scrollbar">
+      <div class="modal-header">
+        <h2>Setup Your Academic Profile</h2>
+        <p class="modal-subtitle">Enter your current academic standing from FLEX</p>
+      </div>
+      <div class="setup-form">
+        <div class="form-group">
+          <label for="selectDepartment">Select Your Degree Program</label>
+          <select id="selectDepartment">
+            <option value="CS">BS Computer Science (137 cr)</option>
+            <option value="AI">BS Artificial Intelligence (137 cr)</option>
+            <option value="SE">BS Software Engineering (137 cr)</option>
+            <option value="DS">BS Data Science (137 cr)</option>
+            <option value="CY">BS Cyber Security (137 cr)</option>
+            <option value="CE">BS Computer Engineering (140 cr)</option>
+            <option value="EE">BS Electrical Engineering (140 cr)</option>
+            <option value="CV">BS Civil Engineering (140 cr)</option>
+            <option value="BBA">BS Business Administration (135 cr)</option>
+            <option value="AF">BS Accounting and Finance (138 cr)</option>
+            <option value="BA">BS Business Analytics (135 cr)</option>
+            <option value="FT">BS Financial Technology (138 cr)</option>
+            <option value="GEN">Other / Custom</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="initCredits">Completed Credit Hours</label>
+          <input type="number" id="initCredits" value="0" min="0" max="200" placeholder="e.g., 34">
+          <span class="form-hint">From FLEX: Academics - Transcript - Total Credit Hours Earned</span>
+        </div>
+        <div class="form-group">
+          <label for="initCGPA">Current CGPA</label>
+          <input type="number" id="initCGPA" value="0.00" min="0" max="4" step="0.01" placeholder="e.g., 2.75">
+          <span class="form-hint">From FLEX: Academics - Transcript - CGPA (top right)</span>
+        </div>
+        <div class="degree-summary" id="degreeSummary">
+          <div class="summary-title">Degree Requirements</div>
+          <div class="summary-row">
+            <span>Total Required Credits:</span>
+            <strong id="summaryTotal">137</strong>
+          </div>
+          <div class="summary-row">
+            <span>Your Completed Credits:</span>
+            <strong id="summaryCompleted">0</strong>
+          </div>
+          <div class="summary-row highlight">
+            <span>Credits Remaining:</span>
+            <strong id="summaryRemaining">137</strong>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="initSemester">Next Semester to Plan</label>
+          <select id="initSemester">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+        </div>
+        <div class="form-group generic-credits hidden" id="genericCreditsGroup">
+          <label for="customCredits">Total Required Credits for Graduation</label>
+          <input type="number" id="customCredits" value="137" min="100" max="200">
+        </div>
+        <button id="startPlanningBtn" class="btn-primary btn-full">Start Planning</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="importTemplateModal" class="modal">
+    <div class="modal-content modal-lg no-scrollbar">
+      <div class="modal-header">
+        <h2>Import Semester Courses</h2>
+        <button class="modal-close" onclick="closeImportTemplateModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Import courses from the official FAST NUCES tentative study plan for your program</p>
+        <div class="form-group">
+          <label>Select Semester to Import</label>
+          <select id="importSemesterSelect">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+        </div>
+        <div id="importPreview" class="import-preview"></div>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeImportTemplateModal()">Cancel</button>
+          <button class="btn-primary" onclick="confirmImportCourses()">Import Courses</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bulkModal" class="modal">
+    <div class="modal-content no-scrollbar">
+      <div class="modal-header">
+        <h2>Import Multiple Courses</h2>
+        <button class="modal-close" onclick="closeBulkModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Enter one course per line: Course Name [space] Credits [space] Grade</p>
+        <textarea id="bulkInput" placeholder="Data Structures 3 B-
+Linear Algebra 3 B
+COAL 3 C+
+Programming Lab 1 A"></textarea>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeBulkModal()">Cancel</button>
+          <button class="btn-primary" onclick="importBulkCourses()">Import Courses</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="repeatModal" class="modal">
+    <div class="modal-content no-scrollbar">
+      <div class="modal-header">
+        <h2>Repeat Course Details</h2>
+        <button class="modal-close" onclick="closeRepeatModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">When you repeat a course, the new grade replaces the old grade in your CGPA calculation. Enter the original grade you received.</p>
+        <div class="form-group">
+          <label>Original Grade (the grade being replaced)</label>
+          <select id="repeatOldGrade">
+            <option value="">Select Grade</option>
+            <option value="A">A (4.00)</option>
+            <option value="A-">A- (3.67)</option>
+            <option value="B+">B+ (3.33)</option>
+            <option value="B">B (3.00)</option>
+            <option value="B-">B- (2.67)</option>
+            <option value="C+">C+ (2.33)</option>
+            <option value="C">C (2.00)</option>
+            <option value="C-">C- (1.67)</option>
+            <option value="D">D (1.00)</option>
+            <option value="F">F (0.00)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Original Credit Hours</label>
+          <input type="number" id="repeatOldCredits" value="3" min="1" max="6">
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeRepeatModal()">Cancel</button>
+          <button class="btn-primary" onclick="saveRepeatSettings()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="prereqModal" class="modal">
+    <div class="modal-content modal-lg no-scrollbar">
+      <div class="modal-header">
+        <h2>Course Prerequisites Lookup</h2>
+        <button class="modal-close" onclick="closePrereqModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Search for any course to see prerequisites and which degree programs include this course.</p>
+        <div class="form-group">
+          <label>Search Course by Code or Name</label>
+          <input type="text" id="prereqSearchInput" placeholder="e.g., CS2001 or Data Structures" oninput="searchPrereqCourse()">
+        </div>
+        <div id="prereqSearchResults" class="prereq-search-results"></div>
+        <div id="prereqDetails" class="prereq-details hidden">
+          <div class="prereq-course-header">
+            <span class="prereq-code" id="prereqCourseCode"></span>
+            <span class="prereq-name" id="prereqCourseName"></span>
+          </div>
+          <div id="prereqPrograms" class="prereq-programs"></div>
+          <div class="prereq-grid">
+            <div class="prereq-section">
+              <h4>Prerequisites (Must Complete Before)</h4>
+              <div id="prereqList" class="prereq-list"></div>
+            </div>
+            <div class="prereq-section">
+              <h4>Postrequisites (Unlocks These Courses)</h4>
+              <div id="postreqList" class="prereq-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="exportModal" class="modal">
+    <div class="modal-content no-scrollbar">
+      <div class="modal-header">
+        <h2>Export Your Plan</h2>
+        <button class="modal-close" onclick="closeExportModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="export-options">
+          <button class="export-btn" onclick="exportJSON()">
+            <span class="export-icon">JSON</span>
+            <span>Save as Data File</span>
+          </button>
+          <button class="export-btn" onclick="exportText()">
+            <span class="export-icon">TXT</span>
+            <span>Save as Text</span>
+          </button>
+          <button class="export-btn" onclick="exportPDF()">
+            <span class="export-icon">PDF</span>
+            <span>Print / Save PDF</span>
+          </button>
+          <button class="export-btn" onclick="copyToClipboard()">
+            <span class="export-icon">COPY</span>
+            <span>Copy to Clipboard</span>
+          </button>
+        </div>
+        <div id="exportPreview" class="export-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="degreeModal" class="modal">
+    <div class="modal-content modal-lg no-scrollbar">
+      <div class="modal-header">
+        <h2>Degree Requirements</h2>
+        <button class="modal-close" onclick="closeDegreeModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Customize your degree credit requirements</p>
+        <div class="degree-grid">
+          <div class="form-group">
+            <label>Total Required Credits</label>
+            <input type="number" id="reqTotal" value="137" min="100" max="200">
+          </div>
+          <div class="form-group">
+            <label>Domain Core</label>
+            <input type="number" id="reqCore" value="52" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label>General Education</label>
+            <input type="number" id="reqGenEd" value="34" min="0" max="100">
+          </div>
+          <div class="form-group">
+            <label>Math + Support</label>
+            <input type="number" id="reqMath" value="12" min="0" max="50">
+          </div>
+          <div class="form-group">
+            <label>Major Electives</label>
+            <input type="number" id="reqMajorElec" value="21" min="0" max="50">
+          </div>
+          <div class="form-group">
+            <label>Domain Electives</label>
+            <input type="number" id="reqDomainElec" value="15" min="0" max="50">
+          </div>
+          <div class="form-group">
+            <label>Supportive Electives</label>
+            <input type="number" id="reqSupportElec" value="3" min="0" max="30">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeDegreeModal()">Cancel</button>
+          <button class="btn-primary" onclick="saveDegreeRequirements()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="failureModal" class="modal">
+    <div class="modal-content no-scrollbar">
+      <div class="modal-header">
+        <h2>Calculate Failure Impact</h2>
+        <button class="modal-close" onclick="closeFailureModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">See how failing a course would affect your CGPA</p>
+        <div class="form-group">
+          <label>Course Credit Hours</label>
+          <input type="number" id="failCredits" value="3" min="1" max="6">
+        </div>
+        <div class="form-group">
+          <label>Current Grade (if retaking)</label>
+          <select id="failCurrentGrade">
+            <option value="">New course (not taken before)</option>
+            <option value="A">A (4.00)</option>
+            <option value="A-">A- (3.67)</option>
+            <option value="B+">B+ (3.33)</option>
+            <option value="B">B (3.00)</option>
+            <option value="B-">B- (2.67)</option>
+            <option value="C+">C+ (2.33)</option>
+            <option value="C">C (2.00)</option>
+            <option value="C-">C- (1.67)</option>
+            <option value="D">D (1.00)</option>
+          </select>
+        </div>
+        <button class="btn-primary btn-full" onclick="calculateFailureImpact()">Calculate</button>
+        <div id="failureResult" class="failure-result hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="repeatAnalyzerModal" class="modal">
+    <div class="modal-content modal-lg no-scrollbar">
+      <div class="modal-header">
+        <h2>Best Courses to Repeat</h2>
+        <button class="modal-close" onclick="closeRepeatAnalyzerModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-hint">Courses ranked by CGPA improvement if you get an A when repeating</p>
+        <div id="repeatAnalyzerResults"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="container hidden">
+    <header class="main-header">
+      <div class="header-left">
+        <h1>GPA Planner</h1>
+        <p class="tagline" id="programName">BS Computer Science</p>
+      </div>
+      <div class="header-actions">
+        <div class="whatif-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" id="whatIfMode" onchange="toggleWhatIfMode()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Simulation</span>
+          </label>
+        </div>
+        <button class="icon-btn" onclick="openExportModal()" title="Export your plan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </button>
+        <button class="icon-btn" onclick="openSetupModal()" title="Edit profile settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+        <button class="icon-btn" onclick="resetApp()" title="Reset all data">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        </button>
+        <button class="icon-btn" onclick="toggleTheme()" title="Switch theme">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="whatIfBanner" class="whatif-banner hidden">
+      <strong>Simulation Mode Active</strong> - Changes will not be saved. Use this to test different grade scenarios.
+      <button class="btn-text" onclick="exitWhatIfMode()">Exit Simulation</button>
+    </div>
+
+    <section class="dashboard">
+      <div class="stat-card primary">
+        <span class="stat-label">Current CGPA</span>
+        <span class="stat-value" id="dashCGPA">0.00</span>
+        <span class="stat-sub" id="cgpaStatus"></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Credits</span>
+        <span class="stat-value" id="dashCredits">0</span>
+        <span class="stat-sub" id="creditsRemaining"></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Standing</span>
+        <span class="stat-value" id="dashClass">-</span>
+        <span class="stat-sub" id="dashPrevCredits">0 cr previous</span>
+      </div>
+      <div class="stat-card clickable" onclick="openDegreeModal()">
+        <span class="stat-label">Degree Progress</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="degreeProgress"></div>
+        </div>
+        <span class="stat-sub" id="degreeProgressText">0% complete</span>
+      </div>
+    </section>
+
+    <div id="warningBanner" class="warning-banner hidden">
+      <span class="warning-text" id="warningText"></span>
+    </div>
+
+    <div id="healthAdvice" class="advice-box hidden">
+      <div class="advice-header">Strategic Recommendations</div>
+      <ul id="adviceList"></ul>
+    </div>
+
+    <section class="card visualization-section">
+      <div class="section-header">
+        <h2>GPA Progression</h2>
+        <div class="chart-tabs">
+          <button class="chart-tab active" onclick="switchChart('sgpa')">SGPA</button>
+          <button class="chart-tab" onclick="switchChart('cgpa')">CGPA</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="gpaChart" width="800" height="200"></canvas>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="section-header">
+        <h2>Semester Timeline</h2>
+      </div>
+      <div class="timeline-container no-scrollbar">
+        <div id="timeline" class="timeline">
+          <div class="timeline-start">
+            <span class="timeline-label">Start</span>
+            <span class="timeline-cgpa" id="timelineStart">0.00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools-row">
+      <button class="tool-btn" onclick="openPrereqModal()">
+        <span class="tool-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><circle cx="12" cy="17" r="1"></circle></svg>
+        </span>
+        <span class="tool-label">Prerequisites</span>
+        <span class="tool-desc">Check course requirements</span>
+      </button>
+      <button class="tool-btn" onclick="openFailureModal()">
+        <span class="tool-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><circle cx="12" cy="17" r="1" fill="currentColor"></circle></svg>
+        </span>
+        <span class="tool-label">Failure Impact</span>
+        <span class="tool-desc">Calculate CGPA drop</span>
+      </button>
+      <button class="tool-btn" onclick="openRepeatAnalyzerModal()">
+        <span class="tool-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+        </span>
+        <span class="tool-label">Repeat Analyzer</span>
+        <span class="tool-desc">Best courses to repeat</span>
+      </button>
+      <button class="tool-btn" onclick="showRecoveryAdvisor()">
+        <span class="tool-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+        </span>
+        <span class="tool-label">Recovery Plan</span>
+        <span class="tool-desc">Semesters to reach target</span>
+      </button>
+    </section>
+
+    <section class="card target-section">
+      <div class="section-header">
+        <h2>Target CGPA</h2>
+      </div>
+      <div class="target-inputs">
+        <div class="form-group inline">
+          <label>Target</label>
+          <input type="number" id="targetCGPA" value="3.00" min="0" max="4" step="0.01">
+        </div>
+        <div class="form-group inline">
+          <label>Semesters</label>
+          <select id="targetSemesters">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <button class="btn-primary target-calc-btn" onclick="calculateTarget()">Calculate</button>
+      </div>
+      <div id="targetResult" class="target-result hidden">
+        <p id="targetMessage"></p>
+      </div>
+    </section>
+
+    <section id="recoverySection" class="card hidden">
+      <div class="section-header">
+        <h2>CGPA Recovery Plan</h2>
+        <button class="btn-icon" onclick="hideRecoveryAdvisor()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <p class="section-desc">Estimated semesters needed to reach each target (assuming 3.5 SGPA average with 15 credits per semester)</p>
+      <div class="recovery-grid" id="recoveryGrid"></div>
+    </section>
+
+    <section id="suggestSection" class="card hidden">
+      <div class="section-header">
+        <h2>Recommended Course Load</h2>
+        <button class="btn-icon" onclick="hideSuggestSection()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="suggestContent"></div>
+    </section>
+
+    <section id="semestersContainer" class="semesters-container"></section>
+
+    <div class="add-semester-row">
+      <button class="btn-add-semester" onclick="addSemester('regular')">Add Regular Semester</button>
+      <button class="btn-add-semester summer" onclick="addSemester('summer')">Add Summer Semester</button>
+      <button class="btn-add-semester duplicate" onclick="duplicateLastSemester()">Duplicate Last Semester</button>
+    </div>
+
+    <section class="help-section">
+      <h3>How to Use This Tool</h3>
+      <div class="help-grid">
+        <div class="help-item">
+          <strong>Adding Courses</strong>
+          <p>Click "Add Course" in any semester. Enter course name, credit hours, and expected/actual grade.</p>
+        </div>
+        <div class="help-item">
+          <strong>Import from Template</strong>
+          <p>Click "Import" button in a semester to load official courses from your program's tentative study plan.</p>
+        </div>
+        <div class="help-item">
+          <strong>Repeat Course</strong>
+          <p>If you are retaking a course, click "Repeat" on that course row. Enter your original grade so the calculator can properly replace it in your CGPA.</p>
+        </div>
+        <div class="help-item">
+          <strong>Data Persistence</strong>
+          <p>Your data is automatically saved in your browser's local storage. Keep cookies/storage enabled to retain your progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contribute-section">
+      <h3>Contribute / Suggestions</h3>
+      <p>Have ideas to improve this tool? Found a bug? Want to add your program's curriculum?</p>
+      <div class="contribute-links">
+        <a href="https://github.com/azannw" target="_blank" rel="noopener" class="contribute-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          Contribute on GitHub
+        </a>
+        <a href="https://instagram.com/heyazanw" target="_blank" rel="noopener" class="contribute-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Send Suggestions via DM
+        </a>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p class="footer-brand">Made by <span class="brand-name">Azan</span></p>
+      <div class="footer-social">
+        <a href="https://linkedin.com/in/azanw" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-link linkedin">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://instagram.com/heyazanw" target="_blank" rel="noopener" aria-label="Instagram" class="social-link instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <a href="https://youtube.com/@csconnectpk" target="_blank" rel="noopener" aria-label="YouTube" class="social-link youtube">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://github.com/azannw" target="_blank" rel="noopener" aria-label="GitHub" class="social-link github">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </div>
+      <p class="footer-note">All calculations run locally in your browser. No data is sent to any server.</p>
+      <div class="view-counter">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        <span id="viewCount">0</span> views
+      </div>
+    </footer>
+  </div>
+
+  <script src="prerequisites.js"></script>
+  <script src="curriculum.js"></script>
+  <script src="script.js"></script>
+  
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+</body>
+</html>
