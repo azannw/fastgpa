@@ -104,4 +104,3 @@ All calculations happen client-side. No data is sent to any server. Your academi
 
 ---
 
-**Made with ❤️ by Azan**
