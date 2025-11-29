@@ -1604,7 +1604,7 @@ select {
 }
 
 .footer-brand {
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 16px;
@@ -1630,8 +1630,8 @@ select {
 }
 
 .social-link svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .social-link:hover {
@@ -1639,6 +1639,7 @@ select {
 }
 
 .social-link.linkedin:hover { color: var(--linkedin); }
+.social-link.x-twitter:hover { color: #fff; }
 .social-link.instagram:hover { color: var(--instagram); }
 .social-link.youtube:hover { color: var(--youtube); }
 .social-link.github:hover { color: var(--github); }
@@ -2200,15 +2201,15 @@ select {
     font-size: 1rem;
   }
   
-  .footer-social { gap: 24px; }
-  .social-link svg { width: 28px; height: 28px; }
+  .footer-social { gap: 20px; }
+  .social-link svg { width: 24px; height: 24px; }
   
   .app-footer {
     padding: 36px 20px;
   }
   
   .footer-brand {
-    font-size: 1.0625rem;
+    font-size: 1.1875rem;
   }
   
   .footer-note {
