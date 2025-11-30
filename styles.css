@@ -1639,8 +1639,10 @@ select {
 }
 
 .social-link.linkedin:hover { color: var(--linkedin); }
-.social-link.x-twitter:hover { color: #fff; }
+.social-link.x-twitter:hover { color: #000; }
 .social-link.instagram:hover { color: var(--instagram); }
+
+[data-theme="dark"] .social-link.x-twitter:hover { color: #fff; }
 .social-link.youtube:hover { color: var(--youtube); }
 .social-link.github:hover { color: var(--github); }
 
