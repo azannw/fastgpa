@@ -230,7 +230,16 @@ function closeBulkModal() {
 
 function openImportTemplateModal(semesterIdx) {
   currentImportSemesterIdx = semesterIdx;
-  var semNum = semesterIdx + appState.currentSemester;
+  
+  // Count only regular semesters up to and including this index
+  var regularSemNum = 0;
+  for (var i = 0; i <= semesterIdx; i++) {
+    if (appState.semesters[i].type !== 'summer') {
+      regularSemNum++;
+    }
+  }
+  
+  var semNum = regularSemNum + appState.currentSemester - 1;
   document.getElementById('importSemesterSelect').value = Math.min(semNum, 8);
   updateImportPreview();
   openModal('importTemplateModal');
