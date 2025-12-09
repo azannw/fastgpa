@@ -711,13 +711,21 @@ function resetApp() {
 
 function addSemester(type) {
   type = type || 'regular';
-  var semesterNum = appState.semesters.length + appState.currentSemester;
   var isSummer = type === 'summer';
+  
+  // Count only regular semesters (not summer) for semester numbering
+  var regularCount = appState.semesters.filter(function(s) {
+    return s.type !== 'summer';
+  }).length;
+  
+  var summerCount = appState.semesters.filter(function(s) {
+    return s.type === 'summer';
+  }).length;
   
   var semester = {
     id: generateId(),
     type: type,
-    name: isSummer ? 'Summer ' + Math.ceil(semesterNum / 2) : 'Semester ' + semesterNum,
+    name: isSummer ? 'Summer ' + (summerCount + 1) : 'Semester ' + (regularCount + appState.currentSemester),
     courses: []
   };
   
@@ -734,12 +742,21 @@ function duplicateLastSemester() {
   }
   
   var lastSem = appState.semesters[appState.semesters.length - 1];
-  var semesterNum = appState.semesters.length + appState.currentSemester;
+  var isSummer = lastSem.type === 'summer';
+  
+  // Count only regular semesters (not summer) for semester numbering
+  var regularCount = appState.semesters.filter(function(s) {
+    return s.type !== 'summer';
+  }).length;
+  
+  var summerCount = appState.semesters.filter(function(s) {
+    return s.type === 'summer';
+  }).length;
   
   var newSemester = {
     id: generateId(),
     type: lastSem.type,
-    name: lastSem.type === 'summer' ? 'Summer ' + Math.ceil(semesterNum / 2) : 'Semester ' + semesterNum,
+    name: isSummer ? 'Summer ' + (summerCount + 1) : 'Semester ' + (regularCount + appState.currentSemester),
     courses: lastSem.courses.map(function(c) {
       return {
         id: generateId(),
@@ -1807,12 +1824,20 @@ function createSemesterCard(semester, index) {
   var stats = calculateSemesterStats(index);
   var healthClass = stats?.health || '';
   
+  // Count regular semesters up to and including this index for badge number
+  var regularSemNum = 0;
+  for (var i = 0; i <= index; i++) {
+    if (appState.semesters[i].type !== 'summer') {
+      regularSemNum++;
+    }
+  }
+  
   card.innerHTML = 
     '<div class="section-header">' +
       '<h2>' +
         '<input type="text" class="course-name-input" value="' + semester.name + '" ' +
                'onchange="updateSemesterName(' + index + ', this.value)" style="font-size: 1.125rem; font-weight: 600; min-width: 140px;">' +
-        '<span class="semester-badge ' + badgeClass + '">' + (semester.type === 'summer' ? 'Summer' : 'Sem ' + (index + appState.currentSemester)) + '</span>' +
+        '<span class="semester-badge ' + badgeClass + '">' + (semester.type === 'summer' ? 'Summer' : 'Sem ' + (regularSemNum + appState.currentSemester - 1)) + '</span>' +
         (healthClass ? '<span class="semester-health ' + healthClass + '" title="SGPA Status"></span>' : '') +
       '</h2>' +
       '<div class="semester-actions">' +
