@@ -1845,10 +1845,17 @@ function createSemesterCard(semester, index) {
         (healthClass ? '<span class="semester-health ' + healthClass + '" title="SGPA Status"></span>' : '') +
       '</h2>' +
       '<div class="semester-actions">' +
-        '<button class="semester-import-btn" onclick="openImportTemplateModal(' + index + ')">Import</button>' +
-        '<button class="btn-icon" onclick="moveSemester(' + index + ', -1)" title="Move Up"' + (index === 0 ? ' disabled' : '') + '>Up</button>' +
-        '<button class="btn-icon" onclick="moveSemester(' + index + ', 1)" title="Move Down"' + (index === appState.semesters.length - 1 ? ' disabled' : '') + '>Down</button>' +
-        '<button class="semester-remove-btn" onclick="removeSemester(' + index + ')" title="Remove Semester">' +
+        '<button class="sem-action-btn" onclick="openImportTemplateModal(' + index + ')" title="Import courses from template">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>' +
+          '<span class="btn-label">Import</span>' +
+        '</button>' +
+        '<button class="sem-action-btn" onclick="moveSemester(' + index + ', -1)" title="Move Up"' + (index === 0 ? ' disabled' : '') + '>' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>' +
+        '</button>' +
+        '<button class="sem-action-btn" onclick="moveSemester(' + index + ', 1)" title="Move Down"' + (index === appState.semesters.length - 1 ? ' disabled' : '') + '>' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+        '</button>' +
+        '<button class="sem-action-btn danger" onclick="removeSemester(' + index + ')" title="Remove Semester">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
           '<span class="btn-label">Remove</span>' +
         '</button>' +
