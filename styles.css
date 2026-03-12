@@ -1275,6 +1275,35 @@ select {
   flex-shrink: 0;
 }
 
+.semester-remove-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.semester-remove-btn:hover {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.semester-remove-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
 .course-list {
   display: flex;
   flex-direction: column;
@@ -1776,6 +1805,14 @@ select {
     justify-content: flex-start;
     flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .semester-remove-btn .btn-label {
+    display: none;
+  }
+
+  .semester-remove-btn {
+    padding: 6px 8px;
   }
   
   .contribute-links {

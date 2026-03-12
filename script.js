@@ -787,11 +787,6 @@ function duplicateLastSemester() {
 }
 
 function removeSemester(index) {
-  if (appState.semesters.length <= 1) {
-    alert('You need at least one semester.');
-    return;
-  }
-  
   if (confirm('Remove this semester and all its courses?')) {
     appState.semesters.splice(index, 1);
     renderSemesters();
@@ -1853,8 +1848,9 @@ function createSemesterCard(semester, index) {
         '<button class="semester-import-btn" onclick="openImportTemplateModal(' + index + ')">Import</button>' +
         '<button class="btn-icon" onclick="moveSemester(' + index + ', -1)" title="Move Up"' + (index === 0 ? ' disabled' : '') + '>Up</button>' +
         '<button class="btn-icon" onclick="moveSemester(' + index + ', 1)" title="Move Down"' + (index === appState.semesters.length - 1 ? ' disabled' : '') + '>Down</button>' +
-        '<button class="btn-icon danger" onclick="removeSemester(' + index + ')" title="Delete Semester">' +
-          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+        '<button class="semester-remove-btn" onclick="removeSemester(' + index + ')" title="Remove Semester">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
+          '<span class="btn-label">Remove</span>' +
         '</button>' +
       '</div>' +
     '</div>' +
