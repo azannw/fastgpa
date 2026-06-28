@@ -104,6 +104,27 @@ function getGradePoint(grade) {
   return GRADE_POINTS[grade] ?? null;
 }
 
+function formatGradeOptionLabel(grade) {
+  return grade + ' (' + GRADE_POINTS[grade].toFixed(2) + ')';
+}
+
+function populateGradeSelect(selectId, config) {
+  config = config || {};
+  var select = document.getElementById(selectId);
+  if (!select) return;
+
+  var exclude = config.exclude || [];
+  var placeholder = config.placeholder !== undefined ? config.placeholder : 'Select Grade';
+  var html = '<option value="">' + placeholder + '</option>';
+
+  GRADE_OPTIONS.forEach(function(grade) {
+    if (exclude.indexOf(grade) !== -1) return;
+    html += '<option value="' + grade + '">' + formatGradeOptionLabel(grade) + '</option>';
+  });
+
+  select.innerHTML = html;
+}
+
 function formatGPA(value) {
   return (value || 0).toFixed(2);
 }
@@ -1620,7 +1641,7 @@ function analyzeRepeatOptions() {
     }
     
     semester.courses.forEach(function(course) {
-      if (course.enabled && course.grade && course.grade !== 'A' && !course.isRepeat) {
+      if (course.enabled && course.grade && !course.isRepeat) {
         var gradePoint = getGradePoint(course.grade);
         if (gradePoint !== null && gradePoint < 4.0) {
           var currentPointsVal = course.credits * gradePoint;
@@ -1923,6 +1944,11 @@ function createCourseRow(course, semesterIdx) {
 
 document.addEventListener('DOMContentLoaded', function() {
   loadTheme();
+  populateGradeSelect('repeatOldGrade');
+  populateGradeSelect('failCurrentGrade', {
+    placeholder: 'New course (not taken before)',
+    exclude: ['F']
+  });
   
   var hasState = loadState();
   
